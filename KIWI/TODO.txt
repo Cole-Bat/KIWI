@@ -1,0 +1,12 @@
+Test Pheonix 5 Cancoder initiation
+Create a constants folder for can id values and such or just add in a section into the can_encoder subsystem file
+Create an encoding manager if needed
+Update logging manager for 3 encoders
+Test velocity graphing of 1 encoder and then 3
+depending on results of the velocity graphing test build a PID tuner for each wheel
+integrate velocity control into drivetrain subsystem
+this should then be enough for teleop uniform x and y movement
+
+autonomous diagnose routine
+autonomous position translation and rotation via heading control (requires navx) Holonomic drive PID control with trapezoid motion profile
+
