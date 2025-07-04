@@ -43,7 +43,7 @@ class LoggingSubsystem(commands2.SubsystemBase):
     
     def log_encoder_data(self):
             #raw encoder values
-        encoder_M1 = self.encoder.getVelocity()
+        encoder_M1 = self.encoder.get_velocity_rpm()
 
             #log raw value to Datalog
         self.encoder_M1_entry.append(encoder_M1)
