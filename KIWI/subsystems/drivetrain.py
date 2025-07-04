@@ -3,23 +3,23 @@ import wpilib
 import commands2
 import math
 import numpy as np
-from constants import Constants
+import constants
 
 class Drivetrain(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
         
         # Gearbox A (0° direction) - 2 motors
-        self.motor_a1 = wpilib.PWMTalonSRX(Constants.MOTOR_A1_PWM)  # First motor in gearbox A
-        self.motor_a2 = wpilib.PWMTalonSRX(Constants.MOTOR_A2_PWM)  # Second motor in gearbox A
+        self.motor_a1 = wpilib.PWMTalonSRX(constants.MOTOR_A1_PWM)  # First motor in gearbox A
+        self.motor_a2 = wpilib.PWMTalonSRX(constants.MOTOR_A2_PWM)  # Second motor in gearbox A
         
         # Gearbox B (120° direction) - 2 motors  
-        self.motor_b1 = wpilib.PWMTalonSRX(Constants.MOTOR_B1_PWM)  # First motor in gearbox B
-        self.motor_b2 = wpilib.PWMTalonSRX(Constants.MOTOR_B2_PWM)  # Second motor in gearbox B
+        self.motor_b1 = wpilib.PWMTalonSRX(constants.MOTOR_B1_PWM)  # First motor in gearbox B
+        self.motor_b2 = wpilib.PWMTalonSRX(constants.MOTOR_B2_PWM)  # Second motor in gearbox B
         
         # Gearbox C (240° direction) - 2 motors
-        self.motor_c1 = wpilib.PWMTalonSRX(Constants.MOTOR_C1_PWM)  # First motor in gearbox C
-        self.motor_c2 = wpilib.PWMTalonSRX(Constants.MOTOR_C2_PWM)  # Second motor in gearbox C
+        self.motor_c1 = wpilib.PWMTalonSRX(constants.MOTOR_C1_PWM)  # First motor in gearbox C
+        self.motor_c2 = wpilib.PWMTalonSRX(constants.MOTOR_C2_PWM)  # Second motor in gearbox C
         
         # Kiwi drive angles (in radians)
         self.motor_angles = [2*math.pi/3, 0, 4*math.pi/3]  # 120°, 0°, 240°
@@ -31,7 +31,6 @@ class Drivetrain(commands2.SubsystemBase):
         vy: velocity in y direction (-1 to 1) 
         vz: angular velocity (-1 to 1)
         """
-        
         # Apply deadband
         vx = self.apply_deadband(vx, 0.1)
         vy = self.apply_deadband(vy, 0.1)
@@ -51,7 +50,7 @@ class Drivetrain(commands2.SubsystemBase):
             motor_speeds = [speed / max_speed for speed in motor_speeds]
         
         # Apply speed modifier to cap at 80% duty cycle (can this not just be added to the inverse kinematics section?)
-        motor_speeds = [speed * Constants.PWM_SPEED_MODIFIER for speed in motor_speeds]
+        motor_speeds = [speed * constants.PWM_SPEED_MODIFIER for speed in motor_speeds]
 
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
         self.motor_a1.set(motor_speeds[0])
