@@ -2,14 +2,15 @@ import wpilib
 from phoenix5.sensors import CANCoder
 from phoenix5.sensors import CANCoderStatusFrame
 from phoenix5.sensors import SensorVelocityMeasPeriod
+from constants import Constants
 import math
 
 class CANcoderSubsystem():
     def __init__(self):
         super().__init__()
         
-        cancoder_id = 9 #CAN ID is current set to 9 should add a constants file
-        self.cancoder = CANCoder(cancoder_id)
+        
+        self.cancoder = CANCoder(Constants.cancoder_id_WA)
         
         self.configure_cancoder()
 
