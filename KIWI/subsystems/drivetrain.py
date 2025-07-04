@@ -3,22 +3,23 @@ import wpilib
 import commands2
 import math
 import numpy as np
+from subsystems.constants import Constants
 
 class Drivetrain(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
         
         # Gearbox A (0° direction) - 2 motors
-        self.motor_a1 = wpilib.PWMTalonSRX(0)  # First motor in gearbox A
-        self.motor_a2 = wpilib.PWMTalonSRX(1)  # Second motor in gearbox A
+        self.motor_a1 = wpilib.PWMTalonSRX(Constants.motor_A1_pwm)  # First motor in gearbox A
+        self.motor_a2 = wpilib.PWMTalonSRX(Constants.motor_A2_pwm)  # Second motor in gearbox A
         
         # Gearbox B (120° direction) - 2 motors  
-        self.motor_b1 = wpilib.PWMTalonSRX(2)  # First motor in gearbox B
-        self.motor_b2 = wpilib.PWMTalonSRX(3)  # Second motor in gearbox B
+        self.motor_b1 = wpilib.PWMTalonSRX(Constants.motor_B1_pwm)  # First motor in gearbox B
+        self.motor_b2 = wpilib.PWMTalonSRX(Constants.motor_B2_pwm)  # Second motor in gearbox B
         
         # Gearbox C (240° direction) - 2 motors
-        self.motor_c1 = wpilib.PWMTalonSRX(4)  # First motor in gearbox C
-        self.motor_c2 = wpilib.PWMTalonSRX(5)  # Second motor in gearbox C
+        self.motor_c1 = wpilib.PWMTalonSRX(Constants.motor_C1_pwm)  # First motor in gearbox C
+        self.motor_c2 = wpilib.PWMTalonSRX(Constants.motor_C2_pwm)  # Second motor in gearbox C
         
         # Kiwi drive angles (in radians)
         self.motor_angles = [2*math.pi/3, 0, 4*math.pi/3]  # 120°, 0°, 240°
