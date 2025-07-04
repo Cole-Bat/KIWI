@@ -3,7 +3,7 @@ import wpilib
 import commands2
 import math
 import numpy as np
-from subsystems.constants import Constants
+from constants import Constants
 
 class Drivetrain(commands2.SubsystemBase):
     def __init__(self):
@@ -50,6 +50,9 @@ class Drivetrain(commands2.SubsystemBase):
         if max_speed > 1.0:
             motor_speeds = [speed / max_speed for speed in motor_speeds]
         
+        # Apply speed modifier to cap at 80% duty cycle
+        motor_speeds = [speed * Constants.pwm_speed_modifier for speed in motor_speeds]
+
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
         self.motor_a1.set(motor_speeds[0])
         self.motor_a2.set(motor_speeds[0])
