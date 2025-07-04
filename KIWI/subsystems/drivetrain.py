@@ -51,7 +51,7 @@ class Drivetrain(commands2.SubsystemBase):
             motor_speeds = [speed / max_speed for speed in motor_speeds]
         
         # Apply speed modifier to cap at 80% duty cycle (can this not just be added to the inverse kinematics section?)
-        motor_speeds = [speed * Constants.pwm_speed_modifier for speed in motor_speeds]
+        motor_speeds = [speed * Constants.PWM_SPEED_MODIFIER for speed in motor_speeds]
 
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
         self.motor_a1.set(motor_speeds[0])

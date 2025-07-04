@@ -7,15 +7,15 @@
 
 class Constants():
         
-        cancoder_id_WA = 9  #CAN ID for Wheel 1
-        cancoder_id_WB = 2  #CAN ID for Wheel 2
-        cancoder_id_WC = 3  #CAN ID for Wheel 3
+        CANCODER_ID_WA = 9  #CAN ID for Wheel 1
+        CANCODER_ID_WB = 2  #CAN ID for Wheel 2
+        CANCODER_ID_WC = 3  #CAN ID for Wheel 3
 
-        motor_A1_pwm = 0    #Wheel A Motor 1 PWM port
-        motor_A2_pwm = 1    #Wheel A Motor 2 PWM port
-        motor_B1_pwm = 2    #Wheel B Motor 1 PWM port
-        motor_B2_pwm = 3    #Wheel B Motor 2 PWM port
-        motor_C1_pwm = 4    #Wheel C Motor 1 PWM port
-        motor_C2_pwm = 5    #Wheel C Motor 2 PWM port
+        MOTOR_A1_PWM = 0    #Wheel A Motor 1 PWM port
+        MOTOR_A2_PWM = 1    #Wheel A Motor 2 PWM port
+        MOTOR_B1_PWM = 2    #Wheel B Motor 1 PWM port
+        MOTOR_B2_PWM = 3    #Wheel B Motor 2 PWM port
+        MOTOR_C1_PWM = 4    #Wheel C Motor 1 PWM port
+        MOTOR_C2_PWM = 5    #Wheel C Motor 2 PWM port
 
-        pwm_speed_max = 0.8
+        PWM_SPEED_MODIFIER = 0.8
