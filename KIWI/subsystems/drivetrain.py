@@ -10,16 +10,16 @@ class Drivetrain(commands2.SubsystemBase):
         super().__init__()
         
         # Gearbox A (0° direction) - 2 motors
-        self.motor_a1 = wpilib.PWMTalonSRX(Constants.motor_A1_pwm)  # First motor in gearbox A
-        self.motor_a2 = wpilib.PWMTalonSRX(Constants.motor_A2_pwm)  # Second motor in gearbox A
+        self.motor_a1 = wpilib.PWMTalonSRX(Constants.MOTOR_A1_PWM)  # First motor in gearbox A
+        self.motor_a2 = wpilib.PWMTalonSRX(Constants.MOTOR_A2_PWM)  # Second motor in gearbox A
         
         # Gearbox B (120° direction) - 2 motors  
-        self.motor_b1 = wpilib.PWMTalonSRX(Constants.motor_B1_pwm)  # First motor in gearbox B
-        self.motor_b2 = wpilib.PWMTalonSRX(Constants.motor_B2_pwm)  # Second motor in gearbox B
+        self.motor_b1 = wpilib.PWMTalonSRX(Constants.MOTOR_B1_PWM)  # First motor in gearbox B
+        self.motor_b2 = wpilib.PWMTalonSRX(Constants.MOTOR_B2_PWM)  # Second motor in gearbox B
         
         # Gearbox C (240° direction) - 2 motors
-        self.motor_c1 = wpilib.PWMTalonSRX(Constants.motor_C1_pwm)  # First motor in gearbox C
-        self.motor_c2 = wpilib.PWMTalonSRX(Constants.motor_C2_pwm)  # Second motor in gearbox C
+        self.motor_c1 = wpilib.PWMTalonSRX(Constants.MOTOR_C1_PWM)  # First motor in gearbox C
+        self.motor_c2 = wpilib.PWMTalonSRX(Constants.MOTOR_C2_PWM)  # Second motor in gearbox C
         
         # Kiwi drive angles (in radians)
         self.motor_angles = [2*math.pi/3, 0, 4*math.pi/3]  # 120°, 0°, 240°
