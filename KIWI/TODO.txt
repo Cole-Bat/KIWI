@@ -1,5 +1,6 @@
 Test Pheonix 5 Cancoder initiation
-Create a constants folder for can id values and such or just add in a section into the can_encoder subsystem file
+branch and add network table functionality
+
 Create an encoding manager if needed
 Update logging manager for 3 encoders
 Test velocity graphing of 1 encoder and then 3
