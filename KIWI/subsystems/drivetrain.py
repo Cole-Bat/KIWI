@@ -45,12 +45,12 @@ class Drivetrain(commands2.SubsystemBase):
                      vz)
             motor_speeds.append(speed)
         
-        # Normalize speeds to [-1, 1] range
+        # Normalize speeds to [-1, 1] range (lowkey no clue what this does)
         max_speed = max(abs(speed) for speed in motor_speeds)
         if max_speed > 1.0:
             motor_speeds = [speed / max_speed for speed in motor_speeds]
         
-        # Apply speed modifier to cap at 80% duty cycle
+        # Apply speed modifier to cap at 80% duty cycle (can this not just be added to the inverse kinematics section?)
         motor_speeds = [speed * Constants.pwm_speed_modifier for speed in motor_speeds]
 
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
