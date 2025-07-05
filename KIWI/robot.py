@@ -10,17 +10,17 @@ class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
         
         # Initialize encoder
-        self.cancoder = CANCoder(subsystems.constants.CANCODER_ID_WA)
+       # self.cancoder = CANCoder(subsystems.constants.CANCODER_ID_WA, "rio")
+        
 
         # Initialize controllers
         self.driver_controller = wpilib.XboxController(0)
-       # self.encoder = CANcoderSubsystem()
 
         # Initialize subsystems
         self.drivetrain = Drivetrain()
 
         # Initialize data logging
-        self.logging_subsystem = LoggingSubsystem(self.driver_controller) #self.encoder
+        self.logging_subsystem = LoggingSubsystem(self.driver_controller) 
 
         # Set default commands
         self.drivetrain.setDefaultCommand(
@@ -49,9 +49,9 @@ class MyRobot(commands2.TimedCommandRobot):
 
 
     def teleopPeriodic(self):
-            
-            velocity = self.cancoder.getVelocity()
-            print(f"{velocity}")
+        pass 
+           # velocity = self.cancoder.getVelocity()
+            #print(f"{velocity}")
 
 
 if __name__ == "__main__":
