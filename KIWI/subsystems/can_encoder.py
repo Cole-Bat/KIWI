@@ -1,50 +1,37 @@
 import wpilib
-from phoenix5.sensors import CANCoder
-from phoenix5.sensors import CANCoderStatusFrame
-from phoenix5.sensors import SensorVelocityMeasPeriod
-import subsystems.constants
+from phoenix6.hardware import CANcoder
 import math
 
 class CANcoderSubsystem():
     def __init__(self):
         super().__init__()
         
+        cancoder_id = 9  # CAN ID is current set to 9 should add a constants file
+        self.cancoder = CANcoder(cancoder_id)
         
-        self.cancoder = CANCoder(subsystems.constants.CANCODER_ID_WA)
+        # Get velocity status signal
+        self.velocity_signal = self.cancoder.get_velocity()
         
-        self.configure_cancoder()
-
-    def configure_cancoder(self):
-        """Configure CANCoder settings for velocity"""
-        # Sensor direction - set based on your flywheel's positive spin direction
-        #False = counter-clockwise positive, True = clockwise positive
-        self.cancoder.configSensorDirection(False)
+        # Set update frequency for velocity
+        self.velocity_signal.set_update_frequency(100)  # 100Hz for fast velocity updates
         
-        # Magnet offset doesn't matter much for velocity-only measurement
-        self.cancoder.configMagnetOffset(0.0)
-        
-        # Use 0-360 degree range (absolute range doesn't affect velocity)
-        self.cancoder.AbsoluteSensorRange(False)
-
-        # CRITICAL: Fast status frame period for velocity measurement
-        # 10ms gives you ~100Hz velocity updates - important for flywheel control
-        self.cancoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10)  # 10ms for fast velocity
-        self.cancoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255)  # Slow for faults
-
-        # Velocity measurement period - shorter = more responsive but noisier
-        # Options: 1ms, 2ms, 5ms, 10ms, 20ms, 25ms, 50ms, 100ms
-        self.cancoder.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms)
-        
-        # Velocity measurement window - how many samples to average
-        # Higher = smoother but less responsive. Range: 1-64
-        self.cancoder.configVelocityMeasurementWindow(8)
-        
-    def get_velocity_rpm(self):
+    def get_velocity_rpm(self) -> float:
         """Get flywheel velocity in RPM"""
-        rpm = self.cancoder
-       #this is wrong needs fixing when config can happen
+        # Get velocity in rotations per second
+        velocity_rps = self.velocity_signal.value
+        
+        # Convert to RPM
+        rpm = velocity_rps * 60.0
         return rpm
     
-    def has_fault(self) -> bool:
-        """Check if CANCoder has any faults"""
-        return self.cancoder.hasResetOccurred()
+    def get_velocity_deg_per_sec(self) -> float:
+        """Get flywheel velocity in degrees per second"""
+        # Get velocity in rotations per second
+        velocity_rps = self.velocity_signal.value
+        
+        # Convert to degrees per second
+        deg_per_sec = velocity_rps * 360.0
+        return deg_per_sec
+    
+ 
+   

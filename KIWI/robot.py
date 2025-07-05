@@ -39,9 +39,7 @@ class MyRobot(commands2.TimedCommandRobot):
         print("Logging Initiated")
         
     def teleopPeriodic(self):
-         # Check for faults
-        if self.encoder.has_fault():
-            print("Flywheel CANCoder fault detected!")
+        pass
 
 
 if __name__ == "__main__":

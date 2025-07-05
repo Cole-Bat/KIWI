@@ -5,7 +5,7 @@
 
 
         
-CANCODER_ID_WA = 9  #CAN ID for Wheel 1
+CANCODER_ID_WA = 1  #CAN ID for Wheel 1
 CANCODER_ID_WB = 2  #CAN ID for Wheel 2
 CANCODER_ID_WC = 3  #CAN ID for Wheel 3
 
