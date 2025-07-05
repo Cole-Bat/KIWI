@@ -1,12 +1,11 @@
 import commands2
 import wpilib
-#from subsystems.can_encoder import CANcoderSubsystem
 from wpilib import DataLogManager, DriverStation
 from wpiutil.log import DoubleLogEntry
 
 
 class LoggingSubsystem(commands2.SubsystemBase):
-    def __init__(self, driver_controller: wpilib.XboxController): #encoder:CANcoderSubsystem
+    def __init__(self, driver_controller: wpilib.XboxController): 
         super().__init__()
            # Initialize data logging
         DataLogManager.start()
@@ -14,8 +13,6 @@ class LoggingSubsystem(commands2.SubsystemBase):
 
         self.driver_controller = driver_controller
         self.setup_joystick_logging()
-       # self.encoder = encoder
-        #self.setup_encoder_logging()
 
     def setup_joystick_logging(self):
             #Create log entries for AdvantageScope
@@ -51,4 +48,4 @@ class LoggingSubsystem(commands2.SubsystemBase):
  
     def periodic(self):
         self.log_joystick_data()
-        self.log_encoder_data()
+        #self.log_encoder_data()
