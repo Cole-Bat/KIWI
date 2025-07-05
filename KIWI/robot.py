@@ -11,13 +11,13 @@ class MyRobot(commands2.TimedCommandRobot):
         
         # Initialize controllers
         self.driver_controller = wpilib.XboxController(0)
-        self.encoder = CANcoderSubsystem()
+        #self.encoder = CANcoderSubsystem()
 
         # Initialize subsystems
         self.drivetrain = Drivetrain()
 
         # Initialize data logging
-        self.logging_subsystem = LoggingSubsystem(self.driver_controller,self.encoder)
+        self.logging_subsystem = LoggingSubsystem(self.driver_controller) #self.encoder
 
         # Set default commands
         self.drivetrain.setDefaultCommand(
@@ -40,8 +40,9 @@ class MyRobot(commands2.TimedCommandRobot):
         
     def teleopPeriodic(self):
          # Check for faults
-        if self.encoder.has_fault():
-            print("Flywheel CANCoder fault detected!")
+        #if self.encoder.has_fault():
+            #print("Flywheel CANCoder fault detected!")
+        pass
 
 
 if __name__ == "__main__":
