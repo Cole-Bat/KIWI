@@ -17,32 +17,32 @@ class CANcoderSubsystem():
     def configure_cancoder(self):
         """Configure CANCoder settings for velocity"""
         # Sensor direction - set based on your flywheel's positive spin direction
-        # False = counter-clockwise positive, True = clockwise positive
-        #self.cancoder.configSensorDirection(False)
+        #False = counter-clockwise positive, True = clockwise positive
+        self.cancoder.configSensorDirection(False)
         
         # Magnet offset doesn't matter much for velocity-only measurement
-        #self.cancoder.configMagnetOffset(0.0)
+        self.cancoder.configMagnetOffset(0.0)
         
         # Use 0-360 degree range (absolute range doesn't affect velocity)
-        #self.cancoder.AbsoluteSensorRange(False)
+        self.cancoder.AbsoluteSensorRange(False)
 
         # CRITICAL: Fast status frame period for velocity measurement
         # 10ms gives you ~100Hz velocity updates - important for flywheel control
-        #self.cancoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10)  # 10ms for fast velocity
-       # self.cancoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255)  # Slow for faults
+        self.cancoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10)  # 10ms for fast velocity
+        self.cancoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255)  # Slow for faults
 
         # Velocity measurement period - shorter = more responsive but noisier
         # Options: 1ms, 2ms, 5ms, 10ms, 20ms, 25ms, 50ms, 100ms
-        #self.cancoder.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms)
+        self.cancoder.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_10Ms)
         
         # Velocity measurement window - how many samples to average
         # Higher = smoother but less responsive. Range: 1-64
-        #self.cancoder.configVelocityMeasurementWindow(8)
+        self.cancoder.configVelocityMeasurementWindow(8)
         
-    def get_velocity_rpm(self) -> float:
+    def get_velocity_rpm(self):
         """Get flywheel velocity in RPM"""
-        deg_per_sec = self.cancoder
-        rpm = deg_per_sec * 60.0 / 360.0  # Convert deg/sec to RPM
+        rpm = self.cancoder
+       #this is wrong needs fixing when config can happen
         return rpm
     
     def has_fault(self) -> bool:
