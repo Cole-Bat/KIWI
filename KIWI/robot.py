@@ -2,7 +2,6 @@ import wpilib
 import commands2
 from subsystems.drivetrain import Drivetrain
 from subsystems.logging_manager import LoggingSubsystem
-from subsystems.can_encoder import CANcoderSubsystem
 from commands.drive_command import DriveCommand
 
 
@@ -11,13 +10,12 @@ class MyRobot(commands2.TimedCommandRobot):
         
         # Initialize controllers
         self.driver_controller = wpilib.XboxController(0)
-        #self.encoder = CANcoderSubsystem()
 
         # Initialize subsystems
         self.drivetrain = Drivetrain()
 
         # Initialize data logging
-        self.logging_subsystem = LoggingSubsystem(self.driver_controller) #self.encoder
+        self.logging_subsystem = LoggingSubsystem(self.driver_controller)
 
         # Set default commands
         self.drivetrain.setDefaultCommand(
@@ -39,9 +37,6 @@ class MyRobot(commands2.TimedCommandRobot):
         print("Logging Initiated")
         
     def teleopPeriodic(self):
-         # Check for faults
-        #if self.encoder.has_fault():
-            #print("Flywheel CANCoder fault detected!")
         pass
 
 
