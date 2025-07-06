@@ -2,22 +2,20 @@ import wpilib
 import commands2
 from subsystems.drivetrain import Drivetrain
 from subsystems.logging_manager import LoggingSubsystem
+from subsystems.encoder import CAN_coder
 from commands.drive_command import DriveCommand
-from phoenix5.sensors import CANCoder
-import subsystems.constants
+
 
 class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
+    
         
-        # Initialize encoder
-       # self.cancoder = CANCoder(subsystems.constants.CANCODER_ID_WA, "rio")
-        
-
         # Initialize controllers
         self.driver_controller = wpilib.XboxController(0)
 
         # Initialize subsystems
         self.drivetrain = Drivetrain()
+        self.encoder = CAN_coder()
 
         # Initialize data logging
         self.logging_subsystem = LoggingSubsystem(self.driver_controller) 
@@ -40,19 +38,10 @@ class MyRobot(commands2.TimedCommandRobot):
         
     def teleopInit(self):
         print("Logging Initiated")
-     
-#        try:
- #           self.cancoder = CANcoder(9)
-#        except Exception as e:
-#            print(f"CANCoder creation failed: {e}")
- #           self.cancoder = None
-
 
     def teleopPeriodic(self):
-        pass 
-           # velocity = self.cancoder.getVelocity()
-            #print(f"{velocity}")
-
+        print(f"{self.encoder.get_velocity()}")
+         
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

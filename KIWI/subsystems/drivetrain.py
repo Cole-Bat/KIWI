@@ -2,7 +2,6 @@
 import wpilib
 import commands2
 import math
-import numpy as np
 import subsystems.constants
 
 class Drivetrain(commands2.SubsystemBase):

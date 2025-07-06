@@ -15,5 +15,6 @@ class Cancoder(commands2.SubsystemBase):
         pass
 
     def get_velocity(self):
-        velocity = self.cancoder.getVelocity()
-        return velocity
+           velocity = self.cancoder.getVelocity()
+           velocity_rpm = velocity * 60 / 360
+           return velocity_rpm
