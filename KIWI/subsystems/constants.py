@@ -6,8 +6,8 @@
 
         
 CANCODER_ID_WA = 9  #CAN ID for Wheel 1
-CANCODER_ID_WB = 2  #CAN ID for Wheel 2
-CANCODER_ID_WC = 3  #CAN ID for Wheel 3
+CANCODER_ID_WB = 10  #CAN ID for Wheel 2
+CANCODER_ID_WC = 11  #CAN ID for Wheel 3
 
 MOTOR_A1_PWM = 0    #Wheel A Motor 1 PWM port
 MOTOR_A2_PWM = 1    #Wheel A Motor 2 PWM port

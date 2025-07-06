@@ -3,7 +3,7 @@ import subsystems.constants
 import commands2
 
 
-class Cancoder(commands2.SubsystemBase):
+class CAN_coder(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 
