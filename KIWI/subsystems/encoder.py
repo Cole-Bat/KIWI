@@ -4,7 +4,7 @@ import subsystems.constants
 import commands2
 
 
-class CAN_coder(commands2.SubsystemBase):
+class encoder(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 

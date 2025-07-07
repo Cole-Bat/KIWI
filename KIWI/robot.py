@@ -2,20 +2,20 @@ import wpilib
 import commands2
 from subsystems.drivetrain import Drivetrain
 from subsystems.logging_manager import LoggingSubsystem
-from subsystems.encoder import CAN_coder
+import subsystems.encoder
 from commands.drive_command import DriveCommand
 
 
 class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
     
-        
         # Initialize controllers
         self.driver_controller = wpilib.XboxController(0)
 
         # Initialize subsystems
         self.drivetrain = Drivetrain()
-        self.encoder = CAN_coder()
+        self.encoder = subsystems.encoder.encoder()
+
 
         # Initialize data logging
         self.logging_subsystem = LoggingSubsystem(self.driver_controller) 
@@ -40,7 +40,7 @@ class MyRobot(commands2.TimedCommandRobot):
         print("Logging Initiated")
 
     def teleopPeriodic(self):
-        print(f"{self.encoder.get_velocity()}")
+        print(f"{self.encoder.get_all_velocities()}")
          
 
 if __name__ == "__main__":
