@@ -19,8 +19,9 @@ class encoder(commands2.SubsystemBase):
     def configure_cancoders(self):
         """Configure all encoders with consistent settings"""
         for cancoder in self.cancoders.items():
-             # Reset encoder to zero
-                CANCoderConfiguration.initializationStrategy()
+             config = CANCoderConfiguration()
+
+             cancoder.configAllSettings(config)
         
 
     def get_velocity(self, cancoder_name):

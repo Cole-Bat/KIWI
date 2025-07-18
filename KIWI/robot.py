@@ -40,7 +40,9 @@ class MyRobot(commands2.TimedCommandRobot):
         print("Logging Initiated")
 
     def teleopPeriodic(self):
-        print(f"{self.encoder.get_all_velocities()}")
+        velocities = self.encoder.get_all_velocities()
+        
+        print(f"{velocities}")
          
 
 if __name__ == "__main__":
