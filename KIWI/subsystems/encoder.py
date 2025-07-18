@@ -18,7 +18,7 @@ class encoder(commands2.SubsystemBase):
     
     def configure_cancoders(self):
         """Configure all encoders with consistent settings"""
-        for cancoder in self.cancoders.items():
+        for cancoder in self.cancoders.values():
              config = CANCoderConfiguration()
 
              cancoder.configAllSettings(config)
@@ -35,6 +35,7 @@ class encoder(commands2.SubsystemBase):
     def get_all_velocities(self):
         """Get all encoder velocities as a dictionary"""
         velocities = {}
+
         for name, cancoder in self.cancoders.items():
             velocities[name] = cancoder.getVelocity()
         return velocities

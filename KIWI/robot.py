@@ -4,7 +4,7 @@ from subsystems.drivetrain import Drivetrain
 from subsystems.logging_manager import LoggingSubsystem
 import subsystems.encoder
 from commands.drive_command import DriveCommand
-
+from networktables import NetworkTablesInstance
 
 class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
@@ -16,9 +16,12 @@ class MyRobot(commands2.TimedCommandRobot):
         self.drivetrain = Drivetrain()
         self.encoder = subsystems.encoder.encoder()
 
-
         # Initialize data logging
         self.logging_subsystem = LoggingSubsystem(self.driver_controller) 
+
+        # Initialize Network Table
+        nt = NetworkTablesInstance.getDefault()
+        self.table = nt.getTable("Encoders")
 
         # Set default commands
         self.drivetrain.setDefaultCommand(
@@ -41,6 +44,10 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self):
         velocities = self.encoder.get_all_velocities()
+
+        for encoder_name, velocity in velocities.items():
+            subtable = self.table.getSubTable(encoder_name)
+            subtable.putNumber("Velocity", velocity)
         
         print(f"{velocities}")
          
