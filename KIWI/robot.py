@@ -4,7 +4,7 @@ from subsystems.drivetrain import Drivetrain
 from subsystems.logging_manager import LoggingSubsystem
 import subsystems.encoder
 from commands.drive_command import DriveCommand
-from networktables import NetworkTablesInstance
+import ntcore
 
 class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
@@ -20,8 +20,15 @@ class MyRobot(commands2.TimedCommandRobot):
         self.logging_subsystem = LoggingSubsystem(self.driver_controller) 
 
         # Initialize Network Table
-        nt = NetworkTablesInstance.getDefault()
-        self.table = nt.getTable("Encoders")
+        nt = ntcore.NetworkTableInstance.getDefault()
+        table = nt.getTable("Encoders")
+
+        self.cv1_pub = table.getDoubleTopic("Cancoder Value 1").publish()
+        self.cv2_pub= table.getDoubleTopic("Cancoder Value 2").publish()
+        self.cv3_pub = table.getDoubleTopic("Cancoder Value 3").publish()
+        self.cv1 = 0.0
+        self.cv2 = 0.0
+        self.cv3 = 0.0
 
         # Set default commands
         self.drivetrain.setDefaultCommand(
@@ -44,11 +51,15 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self):
         velocities = self.encoder.get_all_velocities()
-
-        for encoder_name, velocity in velocities.items():
-            subtable = self.table.getSubTable(encoder_name)
-            subtable.putNumber("Velocity", velocity)
         
+        #need help indexing through the dictionary so that each item is published to the respective cancoder graph
+
+        for velocity in velocities.values():
+            
+            self.cv1_pub.set(velocity)
+        
+            
+
         print(f"{velocities}")
          
 
