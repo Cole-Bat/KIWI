@@ -53,13 +53,25 @@ class MyRobot(commands2.TimedCommandRobot):
         velocities = self.encoder.get_all_velocities()
         
         #need help indexing through the dictionary so that each item is published to the respective cancoder graph
+        # add in a switch case if, elif optimization isn't a worry. default case else to error
 
-        for velocity in velocities.values():
+        for encoder_name, velocity in velocities.items():
             
-            self.cv1_pub.set(velocity)
-        
-            
+            if encoder_name == "cancoder_1":
+                self.cv1 = velocity
+                self.cv1_pub.set(self.cv1)
 
+            elif encoder_name == "cancoder_2":
+                self.cv2 = velocity
+                self.cv2_pub.set(self.cv2)
+
+            elif encoder_name == "cancoder_3":
+                self.cv3 = velocity
+                self.cv3_pub.set(self.cv3)
+
+            else:
+                print("error: cancoder not found")    
+            
         print(f"{velocities}")
          
 
