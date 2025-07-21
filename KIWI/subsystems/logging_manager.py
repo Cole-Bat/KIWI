@@ -1,51 +1,37 @@
 import commands2
-import wpilib
-from wpilib import DataLogManager, DriverStation
-from wpiutil.log import DoubleLogEntry
+import ntcore
 
 
 class LoggingSubsystem(commands2.SubsystemBase):
-    def __init__(self, driver_controller: wpilib.XboxController): 
+    def __init__(self): 
         super().__init__()
-           # Initialize data logging
-        DataLogManager.start()
-        DriverStation.startDataLog(DataLogManager.getLog())
+       
+        # Initialize Network Table
+        nt = ntcore.NetworkTableInstance.getDefault()
+        table = nt.getTable("Encoders")
 
-        self.driver_controller = driver_controller
-        self.setup_joystick_logging()
+        # Initialize tables for datasets
+        self.cv1_pub = table.getDoubleTopic("Cancoder Value 1").publish()
+        self.cv2_pub= table.getDoubleTopic("Cancoder Value 2").publish()
+        self.cv3_pub = table.getDoubleTopic("Cancoder Value 3").publish()
+        
+   
+    def log_encoder_data(self,velocities):
+        
+        # Switch case for unpacking the dictionary into the respective velocity data sets
+        for encoder_name, velocity in velocities.items():
+            
+            if encoder_name == "cancoder_1":
+                self.cv1 = velocity
+                self.cv1_pub.set(self.cv1)
 
-    def setup_joystick_logging(self):
-            #Create log entries for AdvantageScope
-        self.left_x_entry = DoubleLogEntry(DataLogManager.getLog(), "/JoystickData/LeftStick/X")
-        self.left_y_entry = DoubleLogEntry(DataLogManager.getLog(), "/JoystickData/LeftStick/Y")
-        self.right_x_entry = DoubleLogEntry(DataLogManager.getLog(), "/JoystickData/RightStick/X")
-        self.right_y_entry = DoubleLogEntry(DataLogManager.getLog(), "/JoystickData/RightStick/Y")
-       # self.encoder_M1_entry = DoubleLogEntry(DataLogManager.getLog(), "/Encoder/M1")
-    
-    def setup_encoder_logging(self):
-        pass
-    
-    def log_joystick_data(self):
-            #raw joystick values
-        left_x = self.driver_controller.getLeftX()
-        left_y = self.driver_controller.getLeftY()
-        right_x = self.driver_controller.getRightX()
-        right_y = self.driver_controller.getRightY()
+            elif encoder_name == "cancoder_2":
+                self.cv2 = velocity
+                self.cv2_pub.set(self.cv2)
 
-            #log raw values to Datalog
-        self.left_x_entry.append(left_x)
-        self.left_y_entry.append(left_y)
-        self.right_x_entry.append(right_x)
-        self.right_y_entry.append(right_y)
-    
-    def log_encoder_data(self):
-            #raw encoder values
-        #encoder_M1 = self.encoder.get_velocity_rpm()
+            elif encoder_name == "cancoder_3":
+                self.cv3 = velocity
+                self.cv3_pub.set(self.cv3)
 
-            #log raw value to Datalog
-        #self.encoder_M1_entry.append(encoder_M1)
-        pass
- 
-    def periodic(self):
-        self.log_joystick_data()
-        #self.log_encoder_data()
+            else:
+                print("error: cancoder not found")    
