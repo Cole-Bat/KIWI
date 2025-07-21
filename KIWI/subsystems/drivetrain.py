@@ -30,10 +30,15 @@ class Drivetrain(commands2.SubsystemBase):
         vy: velocity in y direction (-1 to 1) 
         vz: angular velocity (-1 to 1)
         """
+
+        # Apply non-linear curves first
+        vx, vy = self.apply_translation_curve(vx, vy)
+        vz = self.apply_curve(vz, subsystems.constants.ROTATION_CURVE)
+
         # Apply deadband
-        vx = self.apply_deadband(vx, 0.1)
-        vy = self.apply_deadband(vy, 0.1)
-        vz = self.apply_deadband(vz, 0.1)
+        vx = self.apply_deadband(vx, subsystems.constants.DEADBAND_VALUE)
+        vy = self.apply_deadband(vy, subsystems.constants.DEADBAND_VALUE)
+        vz = self.apply_deadband(vz, subsystems.constants.DEADBAND_VALUE)
         
         # Kiwi drive inverse kinematics
         motor_speeds = []
@@ -60,13 +65,50 @@ class Drivetrain(commands2.SubsystemBase):
         
         self.motor_c1.set(motor_speeds[2])
         self.motor_c2.set(motor_speeds[2])
+
+    def apply_curve(self, input_value, curve_power):
+        """
+        Apply a non-linear curve to joystick input (no deadband)
+        
+        Args:
+            input_value: Raw joystick input (-1.0 to 1.0)
+            curve_power: Exponent for the curve (1.0 = linear, >1.0 = more precise at low speeds)
+        
+        Returns:
+            Curved output value (-1.0 to 1.0)
+        """
+        sign = 1.0 if input_value >= 0 else -1.0
+        magnitude = abs(input_value)
+        
+        # Apply curve
+        curved_magnitude = math.pow(magnitude, curve_power)
+        
+        return sign * curved_magnitude
         
     def apply_deadband(self, value, deadband):
         """Apply deadband to joystick input"""
         if abs(value) < deadband:
             return 0.0
         return (value - math.copysign(deadband, value)) / (1.0 - deadband)
-    
+
+    def apply_translation_curve(self, vx, vy):
+        """
+        Apply non-linear curve to translation inputs (vx, vy)
+        This preserves the direction while applying the curve to the magnitude
+        """
+        # Calculate magnitude and direction
+        magnitude = math.sqrt(vx*vx + vy*vy)
+        
+        if magnitude == 0:
+            return 0.0, 0.0
+        
+        # Apply curve to magnitude only
+        curved_magnitude = self.apply_curve(magnitude, subsystems.constants.TRANSLATION_CURVE)
+        
+        # Maintain original direction
+        scale_factor = curved_magnitude / magnitude
+        return vx * scale_factor, vy * scale_factor
+
     def stop(self):
         """Stop all motors"""
         self.motor_a1.set(0)
@@ -74,7 +116,7 @@ class Drivetrain(commands2.SubsystemBase):
         self.motor_b1.set(0)
         self.motor_b2.set(0)
         self.motor_c1.set(0)
-        self.motor_c2.set(0)
+        self.motor_c2.set(0)    
         
     def periodic(self):
         """Called periodically by the scheduler"""
