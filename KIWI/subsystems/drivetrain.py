@@ -33,7 +33,7 @@ class Drivetrain(commands2.SubsystemBase):
 
         # Apply non-linear curves first
         vx, vy = self.apply_translation_curve(vx, vy)
-        vz = self.apply_curve(vz, subsystems.constants.ROTATION_CURVE)
+        vz = self.apply_curve(vz, subsystems.constants.CURVE_BASE)
 
         # Apply deadband
         vx = self.apply_deadband(vx, subsystems.constants.DEADBAND_VALUE)
@@ -66,7 +66,7 @@ class Drivetrain(commands2.SubsystemBase):
         self.motor_c1.set(motor_speeds[2])
         self.motor_c2.set(motor_speeds[2])
 
-    def apply_curve(self, input_value, curve_power):
+    def apply_curve(self, input_value, curve_base):
         """
         Apply a non-linear curve to joystick input (no deadband)
         
@@ -81,7 +81,7 @@ class Drivetrain(commands2.SubsystemBase):
         magnitude = abs(input_value)
         
         # Apply curve
-        curved_magnitude = math.pow(magnitude, curve_power)
+        curved_magnitude = math.log(1 + magnitude, curve_base)
         
         return sign * curved_magnitude
         
@@ -103,7 +103,7 @@ class Drivetrain(commands2.SubsystemBase):
             return 0.0, 0.0
         
         # Apply curve to magnitude only
-        curved_magnitude = self.apply_curve(magnitude, subsystems.constants.TRANSLATION_CURVE)
+        curved_magnitude = self.apply_curve(magnitude, subsystems.constants.CURVE_BASE)
         
         # Maintain original direction
         scale_factor = curved_magnitude / magnitude
