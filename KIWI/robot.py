@@ -39,13 +39,13 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self):
         # Create a dictionary with velocity values from all of the encoders
-        velocities = self.encoder.get_all_velocities()
+        self.velocities = self.encoder.get_all_velocities()
         
         # Print the dicitionary to consoles (used primarily for debugging)
-        print(f"{velocities}")
+        print(f"{self.velocities}")
 
         # Logs the encoder data to the network tables system
-        self.logging_subsystem.log_encoder_data(velocities) 
+        self.logging_subsystem.log_encoder_data(self.velocities) 
             
 
 if __name__ == "__main__":
