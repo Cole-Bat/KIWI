@@ -21,7 +21,7 @@ class Drivetrain(commands2.SubsystemBase):
         self.motor_c2 = wpilib.PWMTalonSRX(subsystems.constants.MOTOR_C2_PWM)  # Second motor in gearbox C
         
         # Kiwi drive angles (in radians)
-        self.motor_angles = [2*math.pi/3, 0, 4*math.pi/3]  # 120°, 0°, 240°
+        self.motor_angles = [0, 2*math.pi/3, 4*math.pi/3]  # 0°, 120°, 240°
         
     def drive(self, vx, vy, vz):
         """
