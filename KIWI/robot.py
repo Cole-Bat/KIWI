@@ -39,7 +39,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
 
     def autonomousPeriodic(self):
-
+        """ needs to be reviewed to create smooth consistent motion for data analysis
         self.drivetrain.drive(0,0,self.setpoint)
         
         if self.setpoint <= 1:
@@ -47,7 +47,7 @@ class MyRobot(commands2.TimedCommandRobot):
         
         else:
             pass
-
+        """
         # Create a dictionary with velocity values from all of the encoders
         self.velocities = self.encoder.get_all_velocities()
         
