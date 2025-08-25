@@ -11,9 +11,9 @@ class LoggingSubsystem(commands2.SubsystemBase):
         table = nt.getTable("Encoders")
 
         # Initialize tables for datasets
-        self.cv1_pub = table.getDoubleTopic("Cancoder Value 1").publish()
-        self.cv2_pub= table.getDoubleTopic("Cancoder Value 2").publish()
-        self.cv3_pub = table.getDoubleTopic("Cancoder Value 3").publish()
+        self.cv1_pub = table.getDoubleTopic("WHEEL A SPEED").publish()
+        self.cv2_pub= table.getDoubleTopic("WHEEL B SPEED").publish()
+        self.cv3_pub = table.getDoubleTopic("WHEEL C SPEED").publish()
         
    
     def log_encoder_data(self,velocities):
