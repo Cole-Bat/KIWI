@@ -1,6 +1,7 @@
 import wpilib
 import commands2
 from subsystems.drivetrain import Drivetrain
+from wpilib import DataLogManager , DriverStation
 from subsystems.logging_manager import LoggingSubsystem
 import subsystems.encoder
 from commands.drive_command import DriveCommand
@@ -16,6 +17,8 @@ class MyRobot(commands2.TimedCommandRobot):
         self.encoder = subsystems.encoder.encoder()
 
         # Initialize data logging
+        DataLogManager.start()
+        DriverStation.startDataLog(DataLogManager.getLog())
         self.logging_subsystem = LoggingSubsystem() 
 
         # Set default commands
