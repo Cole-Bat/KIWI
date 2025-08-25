@@ -21,11 +21,12 @@ class encoder(commands2.SubsystemBase):
         for cancoder in self.cancoders.values():
             config = CANCoderConfiguration()
             unit_denom = SensorTimeBase.PerMinute
+            data = CANCoderStatusFrame.SensorData
             # velo_meas = SensorVelocityMeasPeriod(25)
             cancoder.configAllSettings(config)
 
             cancoder.configFeedbackCoefficient(0.087890625 , "DPM" , unit_denom , 0)
-            cancoder.setStatusFramePeriod(CANCoderStatusFrame , 5 , 0)
+            cancoder.setStatusFramePeriod(data , 5 , 0)
             cancoder.configVelocityMeasurementWindow( 4 , 0 ) # need to add this average to the constants file
             # cancoder.configVelocityMeasurementPeriod(velo_meas , 0) if a filter is required i think this is that bode plot frequency thing
             
