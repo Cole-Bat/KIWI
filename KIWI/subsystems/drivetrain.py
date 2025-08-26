@@ -40,21 +40,23 @@ class Drivetrain(commands2.SubsystemBase):
         vy = self.apply_deadband(vy, subsystems.constants.DEADBAND_VALUE)
         vz = self.apply_deadband(vz, subsystems.constants.DEADBAND_VALUE)
         
-        # Kiwi drive inverse kinematics
+        # Kiwi drive kinematics
         motor_speeds = []
         for angle in self.motor_angles:
-            speed = (vx * math.sin(angle) - 
-                     vy * math.cos(angle) - 
+            speed = (vx * math.cos(angle) - 
+                     vy * math.sin(angle) + 
                      vz)
             motor_speeds.append(speed)
         
-        # Normalize speeds to [-1, 1] range (lowkey no clue what this does)
+    
+        # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the trig function equals 1)
         max_speed = max(abs(speed) for speed in motor_speeds)
         if max_speed > 1.0:
             motor_speeds = [speed / max_speed for speed in motor_speeds]
         
+            
         # Apply speed modifier to cap at 80% duty cycle (can this not just be added to the inverse kinematics section?)
-        motor_speeds = [speed * subsystems.constants.PWM_SPEED_MODIFIER for speed in motor_speeds]
+        # motor_speeds = [speed * subsystems.constants.PWM_SPEED_MODIFIER for speed in motor_speeds]
 
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
         self.motor_a1.set(motor_speeds[0])

@@ -28,9 +28,9 @@ class MyRobot(commands2.TimedCommandRobot):
         self.drivetrain.setDefaultCommand(
             DriveCommand(
                 self.drivetrain,
-                lambda: -self.driver_controller.getLeftY(),   # Forward/backward (inverted)
-                lambda: -self.driver_controller.getLeftX(),   # Left/right (inverted)
-                lambda: -self.driver_controller.getRightX()   # Rotation (inverted)
+                lambda: self.driver_controller.getLeftX(),   # Forward/backward (inverted)
+                lambda: self.driver_controller.getLeftY(),   # Left/right (inverted)
+                lambda: self.driver_controller.getRightX()   # Rotation (inverted)
             )
         )
 
