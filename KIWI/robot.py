@@ -3,7 +3,7 @@ import commands2
 from subsystems.drivetrain import Drivetrain
 from wpilib import DataLogManager , DriverStation
 from subsystems.logging_manager import LoggingSubsystem
-import subsystems.encoder
+import subsystems.encoder as enc
 from commands.drive_command import DriveCommand
 
 class MyRobot(commands2.TimedCommandRobot):
@@ -14,7 +14,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
         # Initialize subsystems
         self.drivetrain = Drivetrain()
-        self.encoder = subsystems.encoder.encoder()
+        self.encoder = enc.cancoder()
 
         # Initialize data logging
         DataLogManager.start()
@@ -22,8 +22,6 @@ class MyRobot(commands2.TimedCommandRobot):
         self.logging_subsystem = LoggingSubsystem() 
 
         # Set default commands
-        PWM_setpoint = 0
-        self.setpoint = PWM_setpoint
 
         self.drivetrain.setDefaultCommand(
             DriveCommand(
@@ -39,15 +37,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
 
     def autonomousPeriodic(self):
-        """ needs to be reviewed to create smooth consistent motion for data analysis
-        self.drivetrain.drive(0,0,self.setpoint)
-        
-        if self.setpoint <= 1:
-            self.setpoint += 0.002
-        
-        else:
-            pass
-        """
+      
         # Create a dictionary with velocity values from all of the encoders
         self.velocities = self.encoder.get_all_velocities()
         

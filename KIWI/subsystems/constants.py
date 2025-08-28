@@ -24,6 +24,7 @@ CURVE_BASE = 2.7            # 2.7 corresponds to a a maximum of 70 % Duty cycle
 ROTATION_CURVE = 2.7        # 2.7 corresponds to a a maximum of 70 % Duty cycle
 
 # Constants for the PID controller
-P_GAIN =  1.0
-I_GAIN = 0.0
-D_GAIN = 0.0
+PWM_VEL = 0.001680
+kP =  1.0
+kI = 0.0
+kD = 0.0

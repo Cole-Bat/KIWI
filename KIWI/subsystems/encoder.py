@@ -4,14 +4,14 @@ import subsystems.constants
 import commands2
 
 
-class encoder(commands2.SubsystemBase):
+class cancoder(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 
         self.cancoders = {
-            "cancoder_1": CANCoder(subsystems.constants.CANCODER_ID_WA),  
-            "cancoder_2": CANCoder(subsystems.constants.CANCODER_ID_WB),    
-            "cancoder_3": CANCoder(subsystems.constants.CANCODER_ID_WC),  
+            "cancoder_A": CANCoder(subsystems.constants.CANCODER_ID_WA),  
+            "cancoder_B": CANCoder(subsystems.constants.CANCODER_ID_WB),    
+            "cancoder_C": CANCoder(subsystems.constants.CANCODER_ID_WC),  
         }
 
         self.configure_cancoders()
