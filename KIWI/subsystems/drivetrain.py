@@ -64,7 +64,7 @@ class Drivetrain(commands2.SubsystemBase):
                                           enc.cancoder.get_velocity(cancoder_name = "cancoder_C")])
 
         if np.any(np.isnan(self.motor_speeds_enc)) or np.any(np.isinf(self.motor_speeds_enc)):
-        # Handle encoder failure gracefully
+            print("Encoder Failure Detected")
             self.plant_input = self.motor_speeds  # Fallback to open-loop
         else:
 
