@@ -8,6 +8,7 @@ class cancoder(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 
+        # should swap this to be a numpy array and clean up the code here and in the drivetrain / logging manager / robot
         self.cancoders = {
             "cancoder_A": CANCoder(subsystems.constants.CANCODER_ID_WA),  
             "cancoder_B": CANCoder(subsystems.constants.CANCODER_ID_WB),    

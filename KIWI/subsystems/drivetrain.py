@@ -55,7 +55,7 @@ class Drivetrain(commands2.SubsystemBase):
     
         # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the trig function equals 1)
         max_speed = np.max(np.abs(self.motor_speeds))
-        if max_speed > 1.0:
+        if max_speed > con.MAX_VALUE:
             self.motor_speeds = self.motor_speeds / max_speed
         
         # PID Controller Section
@@ -78,7 +78,7 @@ class Drivetrain(commands2.SubsystemBase):
 
             self.plant_input = self.motor_speeds + pid_values
             
-            self.plant_input = np.clip(self.plant_input, -1.0, 1.0)
+            self.plant_input = np.clip(self.plant_input, con.CLAMP_MIN, con.CLAMP_MAX)
 
 
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
