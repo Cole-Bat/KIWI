@@ -1,28 +1,29 @@
-from phoenix5.sensors import CANCoder , CANCoderStatusFrame , SensorTimeBase # SensorVelocityMeasPeriod
-from phoenix5.sensors import CANCoderConfiguration
-import subsystems.constants
 import commands2
+import phoenix5.sensors as sen
+import subsystems.constants as con
 
 
 class cancoder(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
-
+        pass
         # should swap this to be a numpy array and clean up the code here and in the drivetrain / logging manager / robot
+        #self.cancoder_A = CANCoder(con.CANCODER_ID_WA)
+        
         self.cancoders = {
-            "cancoder_A": CANCoder(subsystems.constants.CANCODER_ID_WA),  
-            "cancoder_B": CANCoder(subsystems.constants.CANCODER_ID_WB),    
-            "cancoder_C": CANCoder(subsystems.constants.CANCODER_ID_WC),  
+            "cancoder_A": sen.CANCoder(con.CANCODER_ID_WA),  
+            "cancoder_B": sen.CANCoder(con.CANCODER_ID_WB),    
+            "cancoder_C": sen.CANCoder(con.CANCODER_ID_WC),  
         }
 
         self.configure_cancoders()
-    
+        
     def configure_cancoders(self):
         """Configure all encoders with consistent settings"""
         for cancoder in self.cancoders.values():
-            config = CANCoderConfiguration()
-            unit_denom = SensorTimeBase.PerMinute
-            data = CANCoderStatusFrame.SensorData
+            config = sen.CANCoderConfiguration()
+            unit_denom = sen.SensorTimeBase.PerMinute
+            data = sen.CANCoderStatusFrame.SensorData
             # velo_meas = SensorVelocityMeasPeriod(25)
             cancoder.configAllSettings(config)
 
@@ -47,3 +48,4 @@ class cancoder(commands2.SubsystemBase):
         for name, cancoder in self.cancoders.items():
             velocities[name] = cancoder.getVelocity()
         return velocities
+    

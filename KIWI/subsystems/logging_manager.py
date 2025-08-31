@@ -21,15 +21,15 @@ class LoggingSubsystem(commands2.SubsystemBase):
         # Switch case for unpacking the dictionary into the respective velocity data sets
         for encoder_name, velocity in velocities.items():
             
-            if encoder_name == "cancoder_1":
+            if encoder_name == "cancoder_A":
                 self.cv1 = velocity
                 self.cv1_pub.set(self.cv1)
 
-            elif encoder_name == "cancoder_2":
+            elif encoder_name == "cancoder_B":
                 self.cv2 = velocity
                 self.cv2_pub.set(self.cv2)
 
-            elif encoder_name == "cancoder_3":
+            elif encoder_name == "cancoder_C":
                 self.cv3 = velocity
                 self.cv3_pub.set(self.cv3)
 

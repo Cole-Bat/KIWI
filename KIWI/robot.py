@@ -20,9 +20,19 @@ class MyRobot(commands2.TimedCommandRobot):
         DataLogManager.start()
         DriverStation.startDataLog(DataLogManager.getLog())
         self.logging_subsystem = LoggingSubsystem() 
+    
+    def autonomousInit(self):
+        print("Data Collection Started")
 
-        # Set default commands
 
+    def autonomousPeriodic(self):
+        pass
+
+    def teleopInit(self):
+        print("Logging Initiated")
+
+    def teleopPeriodic(self):
+        
         self.drivetrain.setDefaultCommand(
             DriveCommand(
                 self.drivetrain,
@@ -30,36 +40,20 @@ class MyRobot(commands2.TimedCommandRobot):
                 lambda: self.driver_controller.getLeftY(),   # Left/right (inverted)
                 lambda: self.driver_controller.getRightX()   # Rotation (inverted)
             )
-        )
+        ) 
+    
+        # Create some output of the PID error values for debugging
 
-    def autonomousInit(self):
-        print("Data Collection Started")
-
-
-    def autonomousPeriodic(self):
-      
         # Create a dictionary with velocity values from all of the encoders
         self.velocities = self.encoder.get_all_velocities()
         
-        # Print the dicitionary to consoles (used primarily for debugging)
-        print(f"{self.velocities}")
-
         # Logs the encoder data to the network tables system
-        self.logging_subsystem.log_encoder_data(self.velocities) 
-        
-    def teleopInit(self):
-        print("Logging Initiated")
+        self.logging_subsystem.log_encoder_data(self.velocities)
 
-    def teleopPeriodic(self):
-        # Create a dictionary with velocity values from all of the encoders
-        self.velocities = self.encoder.get_all_velocities()
-        
         # Print the dicitionary to consoles (used primarily for debugging)
-        print(f"{self.velocities}")
-
-        # Logs the encoder data to the network tables system
-        self.logging_subsystem.log_encoder_data(self.velocities) 
-            
+        # print(f"{self.velocities}")
+ 
+    
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

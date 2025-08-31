@@ -1,7 +1,6 @@
 import wpilib
 import commands2
 import math
-import numpy as np
 import subsystems.constants as con
 import subsystems.encoder as enc
 from wpimath.controller import PIDController
@@ -24,13 +23,14 @@ class Drivetrain(commands2.SubsystemBase):
         
         # Kiwi drive angles (in radians)
         
-        self.motor_angles = np.array([0, 2*math.pi/3, 4*math.pi/3])  # 0°, 120°, 240°
-        self.motor_speeds = np.zeros(3)
+        self.motor_angles = [0, 2*math.pi/3, 4*math.pi/3]  # 0°, 120°, 240°
+        self.motor_speeds = []
 
         self.pid_a = PIDController(con.kP, con.kI, con.kD)
         self.pid_b = PIDController(con.kP, con.kI, con.kD)
         self.pid_c = PIDController(con.kP, con.kI, con.kD)
 
+        
     def drive(self, vx, vy, vz):
         """
         Drive the robot using kiwi drive kinematics
@@ -49,48 +49,46 @@ class Drivetrain(commands2.SubsystemBase):
         vz = self.apply_deadband(vz, con.DEADBAND_VALUE)
         
         # Kiwi drive kinematics
-        self.motor_speeds = (vx * np.cos(self.motor_angles) - 
-                            vy * np.sin(self.motor_angles) + 
-                            vz)
-    
+        for angle in self.motor_angles:
+            speed = (vx * math.sin(angle) - 
+                     vy * math.cos(angle) - 
+                     vz)
+            self.motor_speeds.append(speed)
+
         # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the trig function equals 1)
-        max_speed = np.max(np.abs(self.motor_speeds))
+        max_speed = max(abs(speed) for speed in self.motor_speeds)
         if max_speed > con.MAX_VALUE:
             self.motor_speeds = self.motor_speeds / max_speed
         
-        # PID Controller Section
-        self.motor_speeds_enc = np.array([enc.cancoder.get_velocity(cancoder_name = "cancoder_A"), 
-                                          enc.cancoder.get_velocity(cancoder_name = "cancoder_B"), 
-                                          enc.cancoder.get_velocity(cancoder_name = "cancoder_C")])
+        # PID Controller Section  
 
-        if np.any(np.isnan(self.motor_speeds_enc)) or np.any(np.isinf(self.motor_speeds_enc)):
-            print("Encoder Failure Detected")
-            self.plant_input = self.motor_speeds  # Fallback to open-loop
-        else:
+        wheel_A_set = self.motor_speeds[0] *con.PWM_VEL
+        wheel_B_set = self.motor_speeds[1] *con.PWM_VEL
+        wheel_C_set = self.motor_speeds[2] *con.PWM_VEL
 
-            motor_speeds_set = self.motor_speeds * con.PWM_VEL                           
+        wheel_A_enc = enc.cancoder["cancoder_A"].get_velocity()
+        wheel_B_enc = enc.cancoder["cancoder_B"].get_velocity()
+        wheel_C_enc = enc.cancoder["cancoder_C"].get_velocity()
+ 
+        wheel_A_PID = self.pid_a.calculate(wheel_A_enc, wheel_A_set) / con.PWM_VEL
+        wheel_B_PID = self.pid_b.calculate(wheel_B_enc, wheel_B_set) / con.PWM_VEL
+        wheel_C_PID = self.pid_c.calculate(wheel_C_enc, wheel_C_set) / con.PWM_VEL
+
+        wheel_A_plant = self.motor_speeds[0] + wheel_A_PID
+        wheel_B_plant = self.motor_speeds[1] + wheel_B_PID
+        wheel_C_plant = self.motor_speeds[2] + wheel_C_PID
         
-            pid_a = self.pid_a.calculate(self.motor_speeds_enc[0], motor_speeds_set[0])
-            pid_b = self.pid_b.calculate(self.motor_speeds_enc[1], motor_speeds_set[1])
-            pid_c = self.pid_c.calculate(self.motor_speeds_enc[2], motor_speeds_set[2])
-
-            pid_values = np.array([pid_a, pid_b, pid_c]) / con.PWM_VEL
-
-            self.plant_input = self.motor_speeds + pid_values
-            
-            self.plant_input = np.clip(self.plant_input, con.CLAMP_MIN, con.CLAMP_MAX)
-
-
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
-        self.motor_a1.set(self.plant_input[0])
-        self.motor_a2.set(self.plant_input[0])
+        self.motor_a1.set(wheel_A_plant)
+        self.motor_a2.set(wheel_A_plant)
         
-        self.motor_b1.set(self.plant_input[1])
-        self.motor_b2.set(self.plant_input[1])
+        self.motor_b1.set(wheel_B_plant)
+        self.motor_b2.set(wheel_B_plant)
         
-        self.motor_c1.set(self.plant_input[2])
-        self.motor_c2.set(self.plant_input[2])
-
+        self.motor_c1.set(wheel_C_plant)
+        self.motor_c2.set(wheel_C_plant)
+        
+            
     def apply_curve(self, input_value, curve_base):
         """
         Apply a non-linear curve to joystick input (no deadband)

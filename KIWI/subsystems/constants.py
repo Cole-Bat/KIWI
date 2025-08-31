@@ -5,7 +5,7 @@
 
 
 # CAN Constants        
-CANCODER_ID_WA = 9  #CAN ID for Wheel 1
+CANCODER_ID_WA = 9   #CAN ID for Wheel 1
 CANCODER_ID_WB = 10  #CAN ID for Wheel 2
 CANCODER_ID_WC = 11  #CAN ID for Wheel 3
 
@@ -30,5 +30,5 @@ PWM_VEL = 0.001680
 kP =  1.0
 kI = 0.0
 kD = 0.0
-CLAMP_MIN = 0.75
+CLAMP_MIN = -0.75
 CLAMP_MAX = 0.75

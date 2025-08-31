@@ -9,7 +9,7 @@ deg = 0
 data = []
 time = []
 
-vx = 0.7
+vx = 0.0
 vy = 0.0
 vz = 0.0
 
