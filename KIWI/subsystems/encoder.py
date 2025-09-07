@@ -32,6 +32,8 @@ class cancoder(commands2.SubsystemBase):
                 4, 0
             )  # need to add this average to the constants file
             # cancoder.configVelocityMeasurementPeriod(velo_meas , 0) if a filter is required i think this is that bode plot frequency thing
+        #need to swap the direction of the encoder values preferably in config but they are inversed in the drivetrain right now
+
 
     def get_velocity(self, cancoder_name) -> float:
         """Get velocity in degrees per second from specified encoder"""

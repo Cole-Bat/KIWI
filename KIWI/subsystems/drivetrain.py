@@ -12,27 +12,20 @@ class Drivetrain(commands2.SubsystemBase):
 
         # Gearbox A (0° direction) - 2 motors
         self.motor_a1 = wpilib.PWMTalonSRX(con.MOTOR_A1_PWM)  # First motor in gearbox A
-        self.motor_a2 = wpilib.PWMTalonSRX(
-            con.MOTOR_A2_PWM
-        )  # Second motor in gearbox A
+        self.motor_a2 = wpilib.PWMTalonSRX(con.MOTOR_A2_PWM)  # Second motor in gearbox A
 
         # Gearbox B (120° direction) - 2 motors
         self.motor_b1 = wpilib.PWMTalonSRX(con.MOTOR_B1_PWM)  # First motor in gearbox B
-        self.motor_b2 = wpilib.PWMTalonSRX(
-            con.MOTOR_B2_PWM
-        )  # Second motor in gearbox B
+        self.motor_b2 = wpilib.PWMTalonSRX(con.MOTOR_B2_PWM)  # Second motor in gearbox B
 
         # Gearbox C (240° direction) - 2 motors
         self.motor_c1 = wpilib.PWMTalonSRX(con.MOTOR_C1_PWM)  # First motor in gearbox C
-        self.motor_c2 = wpilib.PWMTalonSRX(
-            con.MOTOR_C2_PWM
-        )  # Second motor in gearbox C
+        self.motor_c2 = wpilib.PWMTalonSRX(con.MOTOR_C2_PWM)  # Second motor in gearbox C
 
         # Kiwi drive angles (in radians)
 
         self.motor_angles = [0, 2 * math.pi / 3, 4 * math.pi / 3]  # 0°, 120°, 240°
-        self.motor_speeds = []
-
+        
         self.cancoder = cancoder
 
         self.pid_a = PIDController(con.kP, con.kI, con.kD)
@@ -46,6 +39,7 @@ class Drivetrain(commands2.SubsystemBase):
         vy: velocity in y direction (-1 to 1)
         vz: angular velocity (-1 to 1)
         """
+        
 
         # Apply non-linear curves first
         vx, vy = self.apply_translation_curve(vx, vy)
@@ -57,43 +51,54 @@ class Drivetrain(commands2.SubsystemBase):
         vz = self.apply_deadband(vz, con.DEADBAND_VALUE)
 
         # Kiwi drive kinematics
+        self.motor_speeds = []
         for angle in self.motor_angles:
-            speed = vx * math.sin(angle) - vy * math.cos(angle) - vz
+            speed = float(vx * math.cos(angle) - vy * math.sin(angle) + vz)
             self.motor_speeds.append(speed)
 
-        # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the trig function equals 1)
+        # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the kinematics function equals 1)
         max_speed = max(abs(speed) for speed in self.motor_speeds)
         if max_speed > con.MAX_VALUE:
-            self.motor_speeds = self.motor_speeds / max_speed
+            self.motor_speeds[0] = self.motor_speeds[0] / max_speed
+            self.motor_speeds[1] = self.motor_speeds[1] / max_speed
+            self.motor_speeds[2] = self.motor_speeds[2] / max_speed
 
         # PID Controller Section
+        
+        wheel_A_set = self.motor_speeds[0] / con.PWM_VEL
+        wheel_B_set = self.motor_speeds[1] / con.PWM_VEL
+        wheel_C_set = self.motor_speeds[2] / con.PWM_VEL
 
-        wheel_A_set = self.motor_speeds[0] * con.PWM_VEL
-        wheel_B_set = self.motor_speeds[1] * con.PWM_VEL
-        wheel_C_set = self.motor_speeds[2] * con.PWM_VEL
+        print(f"set Value: A = {wheel_A_set}, B = {wheel_B_set}, C = {wheel_C_set}")
 
-        wheel_A_enc = self.cancoder.get_velocity("cancoder_A")
-        wheel_B_enc = self.cancoder.get_velocity("cancoder_B")
-        wheel_C_enc = self.cancoder.get_velocity("cancoder_C")
+        wheel_A_enc = self.cancoder.get_velocity("cancoder_A") * -1.0
+        wheel_B_enc = self.cancoder.get_velocity("cancoder_B") * -1.0
+        wheel_C_enc = self.cancoder.get_velocity("cancoder_C") * -1.0
 
-        wheel_A_PID = self.pid_a.calculate(wheel_A_enc, wheel_A_set) / con.PWM_VEL
-        wheel_B_PID = self.pid_b.calculate(wheel_B_enc, wheel_B_set) / con.PWM_VEL
-        wheel_C_PID = self.pid_c.calculate(wheel_C_enc, wheel_C_set) / con.PWM_VEL
+        print(f"enc Value: A = {wheel_A_enc}, B = {wheel_B_enc}, C = {wheel_C_enc}")
+
+        wheel_A_PID = self.pid_a.calculate(wheel_A_enc, wheel_A_set) * con.PWM_VEL
+        wheel_B_PID = self.pid_b.calculate(wheel_B_enc, wheel_B_set) * con.PWM_VEL
+        wheel_C_PID = self.pid_c.calculate(wheel_C_enc, wheel_C_set) * con.PWM_VEL
+        
+        print(f"PID Value: A={wheel_A_PID}, B={0}, C={0}")
 
         wheel_A_plant = self.motor_speeds[0] + wheel_A_PID
         wheel_B_plant = self.motor_speeds[1] + wheel_B_PID
         wheel_C_plant = self.motor_speeds[2] + wheel_C_PID
 
+        print(f"PLANT Value: A={wheel_A_plant}, B={wheel_B_plant}, C={wheel_C_plant}")
+
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
         self.motor_a1.set(wheel_A_plant)
         self.motor_a2.set(wheel_A_plant)
-
+        
         self.motor_b1.set(wheel_B_plant)
         self.motor_b2.set(wheel_B_plant)
 
         self.motor_c1.set(wheel_C_plant)
         self.motor_c2.set(wheel_C_plant)
-
+        
     def apply_curve(self, input_value, curve_base):
         """
         Apply a non-linear curve to joystick input (no deadband)

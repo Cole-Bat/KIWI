@@ -21,13 +21,13 @@ PWM_SPEED_MODIFIER = (
 DEADBAND_VALUE = 0.05  # Should be greater than the deadband of the talon controller
 CURVE_BASE = 2.7  # 2.7 corresponds to a a maximum of 70 % Duty cycle
 ROTATION_CURVE = 2.7  # 2.7 corresponds to a a maximum of 70 % Duty cycle
-MAX_VALUE = 0.8
+MAX_VALUE = 1.0
 
 
 # Constants for the PID controller
-PWM_VEL = 0.001680
-kP = 1.0
-kI = 0.0
+PWM_VEL = 0.00168  #previously calculated was 0.00168
+kP = 0.7
+kI = 0.001
 kD = 0.0
 CLAMP_MIN = -0.75
 CLAMP_MAX = 0.75

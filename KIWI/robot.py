@@ -22,6 +22,15 @@ class MyRobot(commands2.TimedCommandRobot):
         DriverStation.startDataLog(DataLogManager.getLog())
         self.logging_subsystem = LoggingSubsystem()
 
+        self.teleDrive = self.drivetrain.setDefaultCommand(
+                    DriveCommand(
+                        self.drivetrain,
+                        lambda: self.driver_controller.getLeftX(),  # Left/right
+                        lambda: self.driver_controller.getLeftY(),  # Forward/backward 
+                        lambda: self.driver_controller.getRightX(),  # Rotation
+                    )
+                )
+
     def autonomousInit(self):
         print("Data Collection Started")
 
@@ -32,15 +41,6 @@ class MyRobot(commands2.TimedCommandRobot):
         print("Logging Initiated")
 
     def teleopPeriodic(self):
-
-        self.drivetrain.setDefaultCommand(
-            DriveCommand(
-                self.drivetrain,
-                lambda: self.driver_controller.getLeftX(),  # Forward/backward (inverted)
-                lambda: self.driver_controller.getLeftY(),  # Left/right (inverted)
-                lambda: self.driver_controller.getRightX(),  # Rotation (inverted)
-            )
-        )
 
         # Create some output of the PID error values for debugging
 
