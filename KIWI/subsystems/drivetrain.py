@@ -65,21 +65,21 @@ class Drivetrain(commands2.SubsystemBase):
 
         # PID Controller Section
         
-        wheel_A_set = self.motor_speeds[0] / con.PWM_VEL
-        wheel_B_set = self.motor_speeds[1] / con.PWM_VEL
-        wheel_C_set = self.motor_speeds[2] / con.PWM_VEL
+        wheel_A_set = self.motor_speeds[0] 
+        wheel_B_set = self.motor_speeds[1] 
+        wheel_C_set = self.motor_speeds[2] 
 
         print(f"set Value: A = {wheel_A_set}, B = {wheel_B_set}, C = {wheel_C_set}")
 
-        wheel_A_enc = self.cancoder.get_velocity("cancoder_A") * -1.0
-        wheel_B_enc = self.cancoder.get_velocity("cancoder_B") * -1.0
-        wheel_C_enc = self.cancoder.get_velocity("cancoder_C") * -1.0
+        wheel_A_enc = self.cancoder.get_velocity("cancoder_A") * -con.PWM_VEL
+        wheel_B_enc = self.cancoder.get_velocity("cancoder_B") * -con.PWM_VEL
+        wheel_C_enc = self.cancoder.get_velocity("cancoder_C") * -con.PWM_VEL
 
         print(f"enc Value: A = {wheel_A_enc}, B = {wheel_B_enc}, C = {wheel_C_enc}")
 
-        wheel_A_PID = self.pid_a.calculate(wheel_A_enc, wheel_A_set) * con.PWM_VEL
-        wheel_B_PID = self.pid_b.calculate(wheel_B_enc, wheel_B_set) * con.PWM_VEL
-        wheel_C_PID = self.pid_c.calculate(wheel_C_enc, wheel_C_set) * con.PWM_VEL
+        wheel_A_PID = self.pid_a.calculate(wheel_A_enc, wheel_A_set) 
+        wheel_B_PID = self.pid_b.calculate(wheel_B_enc, wheel_B_set) 
+        wheel_C_PID = self.pid_c.calculate(wheel_C_enc, wheel_C_set) 
         
         print(f"PID Value: A={wheel_A_PID}, B={0}, C={0}")
 
