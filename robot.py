@@ -42,7 +42,10 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self):
 
-        # Create some output of the PID error values for debugging
+        # quest nav printing
+        test = self.logging_subsystem.quest_nav_table.getRaw("frameData", None)
+
+        print(test)
 
         # Create a dictionary with velocity values from all of the encoders
         self.velocities = self.encoder.get_all_velocities()
@@ -50,8 +53,7 @@ class MyRobot(commands2.TimedCommandRobot):
         # Logs the encoder data to the network tables system
         self.logging_subsystem.log_encoder_data(self.velocities)
 
-        # Print the dicitionary to consoles (used primarily for debugging)
-        # print(f"{self.velocities}")
+      
 
 
 if __name__ == "__main__":

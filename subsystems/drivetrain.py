@@ -68,25 +68,25 @@ class Drivetrain(commands2.SubsystemBase):
         wheel_B_set = self.motor_speeds[1] 
         wheel_C_set = self.motor_speeds[2] 
 
-        print(f"set Value: A = {wheel_A_set}, B = {wheel_B_set}, C = {wheel_C_set}")
+        #print(f"set Value: A = {wheel_A_set}, B = {wheel_B_set}, C = {wheel_C_set}")
 
         wheel_A_enc = self.cancoder.get_velocity("cancoder_A") * -con.PWM_VEL
         wheel_B_enc = self.cancoder.get_velocity("cancoder_B") * -con.PWM_VEL
         wheel_C_enc = self.cancoder.get_velocity("cancoder_C") * -con.PWM_VEL
 
-        print(f"enc Value: A = {wheel_A_enc}, B = {wheel_B_enc}, C = {wheel_C_enc}")
+        #print(f"enc Value: A = {wheel_A_enc}, B = {wheel_B_enc}, C = {wheel_C_enc}")
 
         wheel_A_PID = self.pid_a.calculate(wheel_A_enc, wheel_A_set) 
         wheel_B_PID = self.pid_b.calculate(wheel_B_enc, wheel_B_set) 
         wheel_C_PID = self.pid_c.calculate(wheel_C_enc, wheel_C_set) 
         
-        print(f"PID Value: A={wheel_A_PID}, B={0}, C={0}")
+        #print(f"PID Value: A={wheel_A_PID}, B={0}, C={0}")
 
         wheel_A_plant = self.motor_speeds[0] + wheel_A_PID
         wheel_B_plant = self.motor_speeds[1] + wheel_B_PID
         wheel_C_plant = self.motor_speeds[2] + wheel_C_PID
 
-        print(f"PLANT Value: A={wheel_A_plant}, B={wheel_B_plant}, C={wheel_C_plant}")
+        #print(f"PLANT Value: A={wheel_A_plant}, B={wheel_B_plant}, C={wheel_C_plant}")
 
         # Set motor speeds for each gearbox (both motors in each gearbox get same speed)
         self.motor_a1.set(wheel_A_plant)
