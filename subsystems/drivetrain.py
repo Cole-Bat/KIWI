@@ -59,10 +59,9 @@ class Drivetrain(commands2.SubsystemBase):
         # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the kinematics function equals 1)
         max_speed = max(abs(speed) for speed in self.motor_speeds)
         if max_speed > con.MAX_VALUE:
-            self.motor_speeds[0] = self.motor_speeds[0] / max_speed
-            self.motor_speeds[1] = self.motor_speeds[1] / max_speed
-            self.motor_speeds[2] = self.motor_speeds[2] / max_speed
-
+            self.motor_speeds[0] = self.motor_speeds[0] / ( max_speed / con.MAX_VALUE )
+            self.motor_speeds[1] = self.motor_speeds[1] / ( max_speed / con.MAX_VALUE )
+            self.motor_speeds[2] = self.motor_speeds[2] / ( max_speed / con.MAX_VALUE )
         # PID Controller Section
         
         wheel_A_set = self.motor_speeds[0] 
@@ -114,7 +113,7 @@ class Drivetrain(commands2.SubsystemBase):
         magnitude = abs(input_value)
 
         # Apply curve
-        curved_magnitude = math.log(1 + magnitude, curve_base)
+        curved_magnitude = magnitude ** curve_base
 
         return sign * curved_magnitude
 
