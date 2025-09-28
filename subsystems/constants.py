@@ -22,12 +22,12 @@ DEADBAND_VALUE = 0.05  # Should be greater than the deadband of the talon contro
 CURVE_BASE = 2.7  # 2.7 corresponds to a a maximum of 70 % Duty cycle
 ROTATION_CURVE = 2.7  # 2.7 corresponds to a a maximum of 70 % Duty cycle
 MAX_VALUE = 1.0
-
+# hey
 
 # Constants for the PID controller
 PWM_VEL = 0.00168  #previously calculated was 0.00168
-kP = 0.7
-kI = 0.001
-kD = 0.0
+kP = 0.68
+kI = 1.5
+kD = 0.03
 CLAMP_MIN = -0.75
 CLAMP_MAX = 0.75
