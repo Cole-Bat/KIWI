@@ -5,6 +5,7 @@ from wpilib import DataLogManager, DriverStation
 from subsystems.logging_manager import LoggingSubsystem
 import subsystems.encoder as enc
 from commands.drive_command import DriveCommand
+from protobuf.data_pb2 import ProtobufQuestNavFrameData
 
 
 class MyRobot(commands2.TimedCommandRobot):
@@ -43,9 +44,13 @@ class MyRobot(commands2.TimedCommandRobot):
     def teleopPeriodic(self):
 
         # quest nav printing
-        test = self.logging_subsystem.quest_nav_table.getRaw("frameData", None)
+        encodedFrameData = self.logging_subsystem.quest_nav_table.getRaw("frameData", None)
+        
+        if encodedFrameData is not None:
+            decodedFrameData = ProtobufQuestNavFrameData()
+            decodedFrameData.ParseFromString(encodedFrameData)
 
-        print(test)
+            print(decodedFrameData)
 
         # Create a dictionary with velocity values from all of the encoders
         self.velocities = self.encoder.get_all_velocities()

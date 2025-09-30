@@ -1,6 +1,5 @@
 import commands2
 import ntcore
-import subsystems.protobuf.data_pb2 as pb2
 
 
 class LoggingSubsystem(commands2.SubsystemBase):
@@ -19,7 +18,6 @@ class LoggingSubsystem(commands2.SubsystemBase):
         
         # Quest NAV init
         self.quest_nav_table = nt.getTable("QuestNav")
-        pb2.ProtobufQuestNavFrameData()
 
    
     def log_encoder_data(self,velocities):
