@@ -1,30 +1,51 @@
-import wpimath
+import commands2
 import subsystems.constants as con
 import ntcore
-from protobuf.commands_pb2 import ProtobufQuestNavCommand, ProtobufQuestNavPoseResetPayload
-from protobuf.geometry2d_pb2 import ProtobufTranslation2d, ProtobufRotation2d, ProtobufPose2d
+from protobuf.commands_pb2 import ProtobufQuestNavCommand
+import protobuf.data_pb2
+import wpimath
 
-def set_pose():
+class QuestNav(commands2.SubsystemBase):
+    def __init__(self):
+        super().__init__()
 
-    pos_init = wpimath.geometry.Pose2d(8.2, 4.1, 0)
+        self.command_id = 0
 
-    quest_pos_init = pos_init.transformBy(con. ROBOT_TO_QUEST)
+        self.nt = ntcore.NetworkTableInstance.getDefault()
 
-    nt = ntcore.NetworkTableInstance.getDefault()
-    
-    quest_nav_table = nt.getTable("QuestNav")
+        self.quest_nav_table = self.nt.getTable("QuestNav")
+        self.request_topic = self.quest_nav_table.getRawTopic("request").publish("ProtobufQuestNavCommand")
 
-    reset_command = ProtobufQuestNavCommand()
+        self.pos_table = self.nt.getTable("Position")
+        self.pos_pub = self.pos_table.getStructTopic("Position", wpimath.geometry.Pose2d).publish()
 
-    reset_command.type = 1
-    reset_command.command_id = 0
-    reset_command.pose_reset_payload.target_pose.translation.x = quest_pos_init.translation().X()
-    reset_command.pose_reset_payload.target_pose.translation.y = quest_pos_init.translation().Y()
-    reset_command.pose_reset_payload.target_pose.rotation.value = quest_pos_init.rotation().radians()
+    def set_pose(self, pose):
+        quest_pos_init = pose.transformBy(con.ROBOT_TO_QUEST)
 
-    request_topic = quest_nav_table.getStringTopic("request").publish()
+        reset_command = ProtobufQuestNavCommand()
 
-    request_topic.set(reset_command.SerializeToString())
-    reset_string = reset_command.SerializeToString()
+        reset_command.type = 1
+        reset_command.command_id = self.command_id
+        self.command_id += 1
 
-    print(reset_string)
+        reset_command.pose_reset_payload.target_pose.translation.x = quest_pos_init.translation().X()
+        reset_command.pose_reset_payload.target_pose.translation.y = quest_pos_init.translation().Y()
+        reset_command.pose_reset_payload.target_pose.rotation.value = quest_pos_init.rotation().radians()
+
+        self.request_topic.set(reset_command.SerializeToString())
+
+    def log_field_pos(self):
+        encodedFrameData = self.quest_nav_table.getRaw("frameData", None)
+        
+        if encodedFrameData is not None:
+            decodedFrameData = protobuf.data_pb2.ProtobufQuestNavFrameData()
+            decodedFrameData.ParseFromString(encodedFrameData)
+
+            pos_data = wpimath.geometry.Pose2d(decodedFrameData.pose2d.translation.x, 
+                                                             decodedFrameData.pose2d.translation.y,
+                                                             decodedFrameData.pose2d.rotation.value)
+            
+            self.pos_pub.set(pos_data)
+
+    def periodic(self):
+        self.log_field_pos()
