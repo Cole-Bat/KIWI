@@ -3,11 +3,12 @@ import commands2
 import math
 import subsystems.constants as con
 import subsystems.encoder as enc
+import subsystems.questnav as qn
 from wpimath.controller import PIDController
 
 
 class Drivetrain(commands2.SubsystemBase):
-    def __init__(self, cancoder: enc.cancoder):
+    def __init__(self, cancoder: enc.cancoder, questnav: qn.QuestNav):
         super().__init__()
 
         # Gearbox A (0° direction) - 2 motors
@@ -27,6 +28,7 @@ class Drivetrain(commands2.SubsystemBase):
         self.motor_angles = [0, 2 * math.pi / 3, 4 * math.pi / 3]  # 0°, 120°, 240°
         
         self.cancoder = cancoder
+        self.questnav = questnav
 
         self.pid_a = PIDController(con.kP, con.kI, con.kD)
         self.pid_b = PIDController(con.kP, con.kI, con.kD)
@@ -49,11 +51,28 @@ class Drivetrain(commands2.SubsystemBase):
         vx = self.apply_deadband(vx, con.DEADBAND_VALUE)
         vy = self.apply_deadband(vy, con.DEADBAND_VALUE)
         vz = self.apply_deadband(vz, con.DEADBAND_VALUE)
+        
+        position = self.questnav.get_field_postion()
+        theta = 0
+        if position is not None:
+            theta = position.rotation().radians()
+            if theta <= 0:
+                theta += 2 * math.pi
+        print(theta)
 
+        robot_vy = vy * math.cos(theta) - vx * math.sin(theta)
+        robot_vx = vy * math.sin(theta) + vx * math.cos(theta)
+
+        print(robot_vy)
+        print(robot_vx)
+
+        vx = robot_vx
+        vy = robot_vy
+        
         # Kiwi drive kinematics
         self.motor_speeds = []
         for angle in self.motor_angles:
-            speed = float(vx * math.cos(angle) - vy * math.sin(angle) + vz)
+            speed = float(vx * math.cos(angle) + vy * math.sin(angle) + vz)
             self.motor_speeds.append(speed)
 
         # Normalize speeds to [-1, 1] range (i.e. useful if rotating at max speed and the kinematics function equals 1)

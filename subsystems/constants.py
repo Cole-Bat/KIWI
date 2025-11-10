@@ -1,6 +1,7 @@
 # ascii art of the kiwi drive and what wheel is 1 2 3 would go hard here
 
 import wpimath
+import math as m
 
 # CAN Constants
 CANCODER_ID_WA = 9  # CAN ID for Wheel 1
@@ -33,4 +34,4 @@ kD = 0.03
 CLAMP_MIN = -0.75
 CLAMP_MAX = 0.75
 
-ROBOT_TO_QUEST = wpimath.geometry.Transform2d(0, 0.270, 0)
+ROBOT_TO_QUEST = wpimath.geometry.Transform2d(0, -0.270, m.pi)

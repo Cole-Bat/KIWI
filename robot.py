@@ -17,8 +17,9 @@ class MyRobot(commands2.TimedCommandRobot):
 
         # Initialize subsystems
         self.encoder = enc.cancoder()
-        self.drivetrain = Drivetrain(self.encoder)
         self.questnav = QuestNav()
+        self.drivetrain = Drivetrain(self.encoder, self.questnav)
+        
 
         # Initialize data logging
         DataLogManager.start()
@@ -31,7 +32,7 @@ class MyRobot(commands2.TimedCommandRobot):
                     DriveCommand(
                         self.drivetrain,
                         lambda: self.driver_controller.getLeftX(),  # Left/right
-                        lambda: self.driver_controller.getLeftY(),  # Forward/backward 
+                        lambda: -self.driver_controller.getLeftY(),  # Forward/backward 
                         lambda: self.driver_controller.getRightX(),  # Rotation
                     )
                 )
@@ -46,10 +47,7 @@ class MyRobot(commands2.TimedCommandRobot):
         pass
 
     def teleopPeriodic(self):
-
-        # quest nav printing
-        self.logging_subsystem.log_field_pos()
-
+       
         # Create a dictionary with velocity values from all of the encoders
         self.velocities = self.encoder.get_all_velocities()
 

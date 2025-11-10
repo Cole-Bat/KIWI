@@ -21,7 +21,7 @@ class QuestNav(commands2.SubsystemBase):
 
     def set_pose(self, pose):
         quest_pos_init = pose.transformBy(con.ROBOT_TO_QUEST)
-
+        print("I am working")
         reset_command = ProtobufQuestNavCommand()
 
         reset_command.type = 1
@@ -35,6 +35,13 @@ class QuestNav(commands2.SubsystemBase):
         self.request_topic.set(reset_command.SerializeToString())
 
     def log_field_pos(self):
+        
+        position = self.get_field_postion()
+        if position is not None:
+
+            self.pos_pub.set(self.get_field_postion())
+
+    def get_field_postion(self):
         encodedFrameData = self.quest_nav_table.getRaw("frameData", None)
         
         if encodedFrameData is not None:
@@ -45,7 +52,8 @@ class QuestNav(commands2.SubsystemBase):
                                                              decodedFrameData.pose2d.translation.y,
                                                              decodedFrameData.pose2d.rotation.value)
             
-            self.pos_pub.set(pos_data)
-
+            return pos_data.transformBy(con.ROBOT_TO_QUEST.inverse())
+        return None
+    
     def periodic(self):
         self.log_field_pos()
