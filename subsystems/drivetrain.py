@@ -4,6 +4,7 @@ import math
 import subsystems.constants as con
 import subsystems.encoder as enc
 from wpimath.controller import PIDController
+from wpimath.filter import SlewRateLimiter as srl
 
 
 class Drivetrain(commands2.SubsystemBase):
@@ -32,7 +33,10 @@ class Drivetrain(commands2.SubsystemBase):
         self.pid_b = PIDController(con.kP, con.kI, con.kD)
         self.pid_c = PIDController(con.kP, con.kI, con.kD)
 
-    def drive(self, vx, vy, vz):
+        self.vx_limiter = srl(con.VX_RATE, -con.VX_RATE, 0)
+        self.vy_limiter = srl(con.VY_RATE, -con.VY_RATE, 0)
+
+    def drive(self, raw_vx, raw_vy, raw_vz):
         """
         Drive the robot using kiwi drive kinematics
         vx: velocity in x direction (-1 to 1)
@@ -42,8 +46,10 @@ class Drivetrain(commands2.SubsystemBase):
         
 
         # Apply non-linear curves first
-        vx, vy = self.apply_translation_curve(vx, vy)
-        vz = self.apply_curve(vz, con.CURVE_BASE)
+        vx, vy = self.apply_translation_curve(
+            self.vx_limiter.calculate(raw_vx), 
+            self.vy_limiter.calculate(raw_vy))
+        vz = self.apply_curve(raw_vz, con.CURVE_BASE)
 
         # Apply deadband
         vx = self.apply_deadband(vx, con.DEADBAND_VALUE)
@@ -118,7 +124,7 @@ class Drivetrain(commands2.SubsystemBase):
 
         return sign * curved_magnitude
 
-    def apply_translation_curve(self, vx, vy):
+    def apply_translation_curve(self, vx: float, vy: float) -> tuple[float, float]:
         """
         Apply non-linear curve to translation inputs (vx, vy)
         This preserves the direction while applying the curve to the magnitude
