@@ -5,6 +5,7 @@ import subsystems.constants as con
 import subsystems.encoder as enc
 import subsystems.questnav as qn
 from wpimath.controller import PIDController
+from wpimath.filter import  SlewRateLimiter as srl
 
 
 class Drivetrain(commands2.SubsystemBase):
@@ -33,6 +34,8 @@ class Drivetrain(commands2.SubsystemBase):
         self.pid_a = PIDController(con.kP, con.kI, con.kD)
         self.pid_b = PIDController(con.kP, con.kI, con.kD)
         self.pid_c = PIDController(con.kP, con.kI, con.kD)
+
+        self.mag_limiter = srl(con.SRL_RATE_ACC, con.SRL_RATE_DEC, 0)
 
     def drive(self, vx, vy, vz):
         """
@@ -145,10 +148,12 @@ class Drivetrain(commands2.SubsystemBase):
         magnitude = math.sqrt(vx * vx + vy * vy)
 
         if magnitude == 0:
+            self.mag_limiter.calculate(0)
             return 0.0, 0.0
 
         # Apply curve to magnitude only
-        curved_magnitude = self.apply_curve(magnitude, con.CURVE_BASE)
+        limited_magnitude = self.mag_limiter.calculate(magnitude)
+        curved_magnitude = self.apply_curve(limited_magnitude, con.CURVE_BASE)
 
         # Maintain original direction
         scale_factor = curved_magnitude / magnitude

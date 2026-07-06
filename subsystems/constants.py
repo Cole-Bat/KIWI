@@ -24,7 +24,10 @@ DEADBAND_VALUE = 0.05  # Should be greater than the deadband of the talon contro
 CURVE_BASE = 2  # 2.7 corresponds to a a maximum of 70 % Duty cycle
 ROTATION_CURVE = 2  # 2.7 corresponds to a a maximum of 70 % Duty cycle
 MAX_VALUE = 0.75
-# hey
+
+# Constants for slew rate limiting
+SRL_RATE_ACC = 0.5 #bring up to 3 to 5 seconds
+SRL_RATE_DEC = -2.0 #can increase further than positive
 
 # Constants for the PID controller
 PWM_VEL = 0.00168  #previously calculated was 0.00168
