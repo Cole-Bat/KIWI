@@ -24,8 +24,8 @@ ROTATION_CURVE = 2.7  # 2.7 corresponds to a a maximum of 70 % Duty cycle
 MAX_VALUE = 1.0
 
 # Constants for slew rate limiting
-VX_RATE = 0.5
-VY_RATE = 0.5
+SRL_RATE_ACC = 0.5 #bring up to 3 to 5 seconds
+SRL_RATE_DEC = -2.0 #can increase further than positive
 
 # Constants for the PID controller
 PWM_VEL = 0.00168  #previously calculated was 0.00168

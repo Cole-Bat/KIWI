@@ -33,8 +33,7 @@ class Drivetrain(commands2.SubsystemBase):
         self.pid_b = PIDController(con.kP, con.kI, con.kD)
         self.pid_c = PIDController(con.kP, con.kI, con.kD)
 
-        self.vx_limiter = srl(con.VX_RATE, -con.VX_RATE, 0)
-        self.vy_limiter = srl(con.VY_RATE, -con.VY_RATE, 0)
+        self.mag_limiter = srl(con.SRL_RATE_ACC, con.SRL_RATE_DEC, 0)
 
     def drive(self, raw_vx, raw_vy, raw_vz):
         """
@@ -45,10 +44,8 @@ class Drivetrain(commands2.SubsystemBase):
         """
         
 
-        # Apply non-linear curves first
-        vx, vy = self.apply_translation_curve(
-            self.vx_limiter.calculate(raw_vx), 
-            self.vy_limiter.calculate(raw_vy))
+        # Apply non-linear curves first with values filtered by slew rate limiter
+        vx, vy = self.apply_translation_curve(raw_vx, raw_vy)
         vz = self.apply_curve(raw_vz, con.CURVE_BASE)
 
         # Apply deadband
@@ -133,10 +130,12 @@ class Drivetrain(commands2.SubsystemBase):
         magnitude = math.sqrt(vx * vx + vy * vy)
 
         if magnitude == 0:
+            self.mag_limiter.calculate(0)
             return 0.0, 0.0
 
         # Apply curve to magnitude only
-        curved_magnitude = self.apply_curve(magnitude, con.CURVE_BASE)
+        limited_magnitude = self.mag_limiter.calculate(magnitude)
+        curved_magnitude = self.apply_curve(limited_magnitude, con.CURVE_BASE)
 
         # Maintain original direction
         scale_factor = curved_magnitude / magnitude
